@@ -62,6 +62,21 @@ gestures {
 }
 ```
 
+<sup>Since: XX.XX</sup>
+
+Specify the desired hot corners with the area size. Default is top-left with size 1 (px):
+
+```kdl
+// Enable hot corners for top left and top right with size 3 (px).
+gestures {
+    hot-corners {
+        top-left
+        top-right
+        size 3
+    }
+}
+```
+
 ### Backdrop customization
 
 Apart from setting a custom backdrop color like described above, you can also put a layer-shell wallpaper into the backdrop with a [layer rule](./Configuration:-Layer-Rules.md#place-within-backdrop), for example:

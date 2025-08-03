@@ -22,6 +22,11 @@ gestures {
     }
 
     hot-corners {
+        top-left
+        // top-right
+        // bottom-left
+        // bottom-right
+        size 1
         // off
     }
 }
@@ -81,7 +86,7 @@ gestures {
 
 <sup>Since: 25.05</sup>
 
-Put your mouse at the very top-left corner of a monitor to toggle the overview.
+Put your mouse at the corner of a monitor to toggle the overview.
 Also works during drag-and-dropping something.
 
 `off` disables the hot corners.
@@ -91,6 +96,20 @@ Also works during drag-and-dropping something.
 gestures {
     hot-corners {
         off
+    }
+}
+```
+
+<sup>Since: XX.XX</sup>
+
+Default corner is `top-left`, but other or multiple corners can be set with `top-left`, `top-right`,`bottom-left` and `bottom-right`.
+
+```kdl
+// Enable hot corners to the top left and top right.
+gestures {
+    hot-corners {
+        top-left
+        top-right
     }
 }
 ```
