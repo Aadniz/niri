@@ -3137,9 +3137,23 @@ impl Niri {
         }
 
         let hot_corners = self.config.borrow().gestures.hot_corners;
-        if !hot_corners.off {
-            let hot_corner = Rectangle::from_size(Size::from((1., 1.)));
-            if hot_corner.contains(pos_within_output) {
+        if hot_corners.is_enabled() {
+            let rec_size = Size::from((hot_corners.size, hot_corners.size)).to_f64();
+            let mut hot_corner_rectangles: Vec<Rectangle<f64, Logical>> = Vec::new();
+            let output_size = output.current_mode().and_then(|cm| Some(cm.size)).unwrap_or(Size::new(0, 0)).to_f64();
+            if hot_corners.top_left {
+                hot_corner_rectangles.push(Rectangle::from_size(rec_size));
+            }
+            if hot_corners.top_right {
+                hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, 0.), rec_size));
+            }
+            if hot_corners.bottom_left {
+                hot_corner_rectangles.push(Rectangle::new(Point::new(0., output_size.h - rec_size.h), rec_size));
+            }
+            if hot_corners.bottom_right {
+                hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, output_size.h - rec_size.h), rec_size));
+            }
+            if hot_corner_rectangles.iter().any(|hcr| hcr.contains(pos_within_output)) {
                 return true;
             }
         }
@@ -3412,9 +3426,23 @@ impl Niri {
                 .or_else(|| layer_toplevel_under(Layer::Background));
         } else {
             let hot_corners = self.config.borrow().gestures.hot_corners;
-            if !hot_corners.off {
-                let hot_corner = Rectangle::from_size(Size::from((1., 1.)));
-                if hot_corner.contains(pos_within_output) {
+            if hot_corners.is_enabled() {
+                let rec_size = Size::from((hot_corners.size, hot_corners.size)).to_f64();
+                let mut hot_corner_rectangles: Vec<Rectangle<f64, Logical>> = Vec::new();
+                let output_size = output.current_mode().and_then(|cm| Some(cm.size)).unwrap_or(Size::new(0, 0)).to_f64();
+                if hot_corners.top_left {
+                    hot_corner_rectangles.push(Rectangle::from_size(rec_size));
+                }
+                if hot_corners.top_right {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, 0.), rec_size));
+                }
+                if hot_corners.bottom_left {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(0., output_size.h - rec_size.h), rec_size));
+                }
+                if hot_corners.bottom_right {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, output_size.h - rec_size.h), rec_size));
+                }
+                if hot_corner_rectangles.iter().any(|hcr| hcr.contains(pos_within_output)) {
                     return rv;
                 }
             }

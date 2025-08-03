@@ -2299,13 +2299,28 @@ impl State {
 
         // contents_under() will return no surface when the hot corner should trigger.
         let hot_corners = self.niri.config.borrow().gestures.hot_corners;
-        if !hot_corners.off
+        if hot_corners.is_enabled()
             && pointer.current_focus().is_none()
             && !self.niri.screenshot_ui.is_open()
         {
-            let hot_corner = Rectangle::from_size(Size::from((1., 1.)));
-            if let Some((_, pos_within_output)) = self.niri.output_under(pos) {
-                let inside_hot_corner = hot_corner.contains(pos_within_output);
+            let rec_size = Size::from((hot_corners.size, hot_corners.size)).to_f64();
+            if let Some((output, pos_within_output)) = self.niri.output_under(pos) {
+                let mut hot_corner_rectangles: Vec<Rectangle<f64, Logical>> = Vec::new();
+                let output_size = output.current_mode().and_then(|cm| Some(cm.size)).unwrap_or(Size::new(0, 0)).to_f64();
+                if hot_corners.top_left {
+                    hot_corner_rectangles.push(Rectangle::from_size(rec_size));
+                }
+                if hot_corners.top_right {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, 0.), rec_size));
+                }
+                if hot_corners.bottom_left {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(0., output_size.h - rec_size.h), rec_size));
+                }
+                if hot_corners.bottom_right {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, output_size.h - rec_size.h), rec_size));
+                }
+
+                let inside_hot_corner = hot_corner_rectangles.iter().any(|hcr|hcr.contains(pos_within_output));
                 if inside_hot_corner && !was_inside_hot_corner {
                     self.niri.layout.toggle_overview();
                 }
@@ -2388,13 +2403,28 @@ impl State {
 
         // contents_under() will return no surface when the hot corner should trigger.
         let hot_corners = self.niri.config.borrow().gestures.hot_corners;
-        if !hot_corners.off
+        if hot_corners.is_enabled()
             && pointer.current_focus().is_none()
             && !self.niri.screenshot_ui.is_open()
         {
-            let hot_corner = Rectangle::from_size(Size::from((1., 1.)));
-            if let Some((_, pos_within_output)) = self.niri.output_under(pos) {
-                let inside_hot_corner = hot_corner.contains(pos_within_output);
+            let rec_size = Size::from((hot_corners.size, hot_corners.size)).to_f64();
+            if let Some((output, pos_within_output)) = self.niri.output_under(pos) {
+                let mut hot_corner_rectangles: Vec<Rectangle<f64, Logical>> = Vec::new();
+                let output_size = output.current_mode().and_then(|cm| Some(cm.size)).unwrap_or(Size::new(0, 0)).to_f64();
+                if hot_corners.top_left {
+                    hot_corner_rectangles.push(Rectangle::from_size(rec_size));
+                }
+                if hot_corners.top_right {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, 0.), rec_size));
+                }
+                if hot_corners.bottom_left {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(0., output_size.h - rec_size.h), rec_size));
+                }
+                if hot_corners.bottom_right {
+                    hot_corner_rectangles.push(Rectangle::new(Point::new(output_size.w - rec_size.w, output_size.h - rec_size.h), rec_size));
+                }
+
+                let inside_hot_corner = hot_corner_rectangles.iter().any(|hcr|hcr.contains(pos_within_output));
                 if inside_hot_corner && !was_inside_hot_corner {
                     self.niri.layout.toggle_overview();
                 }
